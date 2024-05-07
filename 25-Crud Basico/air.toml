@@ -1,0 +1,29 @@
+# air.toml
+
+# Diretórios a serem monitorados para alterações
+root = "."
+exclude_dir = ["vendor", "node_modules", ".git"]
+
+[build]
+  # Caminho para o arquivo principal do seu aplicativo
+  cmd = "main.go"
+
+  # Comando para executar o seu aplicativo (go run main.go, por exemplo)
+  args = ["run", "main.go"]
+
+  # Comando para instalar as dependências (go get, por exemplo)
+  # Este comando será executado quando o air for iniciado pela primeira vez
+  # e sempre que o arquivo go.mod for alterado
+  # Uncomment se necessário
+  # post_build = "go mod tidy"
+
+# Configuração do servidor
+[server]
+  # Porta em que o servidor será executado
+  port = 8000
+
+  # Endereço IP do servidor
+  ip = "127.0.0.1"
+
+  # Indica se deve abrir o navegador automaticamente ao iniciar o servidor
+  open_browser = false
