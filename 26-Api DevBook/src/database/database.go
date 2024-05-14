@@ -55,7 +55,7 @@ func ConnectToDatabase() (*sql.DB, error) {
 		return nil, erro
 	}
 
-	println("Connected to database", db)
+	println("Connected to database", dbName)
 
 	return db, nil
 }

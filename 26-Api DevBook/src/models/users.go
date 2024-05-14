@@ -1,9 +1,12 @@
 package models
 
 import (
+	"api-devbook/src/security"
+	"log"
 	"strings"
 	"time"
 
+	"github.com/badoux/checkmail"
 	"github.com/pkg/errors"
 )
 
@@ -29,6 +32,11 @@ func (user *User) validate(step string) error {
 		return errors.New("Email is required")
 	}
 
+	if erro := checkmail.ValidateFormat(user.Email); erro != nil {
+		return errors.New("Invalid email")
+	}
+	
+
 	if step == "create" &&  user.Password == "" {
 		return errors.New("Password is required")
 	}
@@ -36,14 +44,29 @@ func (user *User) validate(step string) error {
 	return nil
 }
 
-func (user *User) format() {
+func (user *User) format(step string) error {
 	user.Name = strings.TrimSpace(user.Name)
 	user.Alias = strings.TrimSpace(user.Alias)
 	user.Email = strings.TrimSpace(user.Email)
+
+	if step == "create" {
+		hashedPassword, err := security.Hash(user.Password)
+		if err != nil {
+			log.Println("Error hashing password: ", err)
+			return err
+		}
+		user.Password = string(hashedPassword)
+	}
+	return nil
 }
 
 func (user *User) Prepare(step string) error {
-	user.format()
+	user.format(step)
+	if err := user.validate(step); err != nil {
+		return err
+	}
+
+
 	err := user.validate(step)
 	if err != nil {
 		return err
